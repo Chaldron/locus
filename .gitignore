@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+
+# Xcode - User-specific
+xcuserdata/
+*.xcuserstate
+*.xcuserdatad/
+
+# Xcode - Build
+build/
+DerivedData/
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/project.xcworkspace/
+*.xcworkspace/*
+!*.xcworkspace/contents.xcworkspacedata
+
+# Swift Package Manager
+.build/
+.swiftpm/
+Package.resolved

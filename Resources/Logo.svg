@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <radialGradient id="bezel" cx="50%" cy="32%" r="78%">
+      <stop offset="0%" stop-color="#2c2c30" />
+      <stop offset="55%" stop-color="#141418" />
+      <stop offset="100%" stop-color="#050507" />
+    </radialGradient>
+
+    <linearGradient id="wordmarkShade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#16161e" />
+      <stop offset="50%" stop-color="#0c0c12" />
+      <stop offset="100%" stop-color="#050508" />
+    </linearGradient>
+
+    <linearGradient id="plateauShade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#24242e" />
+      <stop offset="50%" stop-color="#15151c" />
+      <stop offset="100%" stop-color="#08080e" />
+    </linearGradient>
+
+    <linearGradient id="mountShade" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3a3a48" />
+      <stop offset="50%" stop-color="#24242e" />
+      <stop offset="100%" stop-color="#10101a" />
+    </linearGradient>
+
+    <radialGradient id="glass" cx="38%" cy="30%" r="92%">
+      <stop offset="0%" stop-color="#0f3854" />
+      <stop offset="18%" stop-color="#0a2440" />
+      <stop offset="45%" stop-color="#05162a" />
+      <stop offset="78%" stop-color="#020812" />
+      <stop offset="100%" stop-color="#000000" />
+    </radialGradient>
+
+    <radialGradient id="coatingTeal" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#3ab0c8" stop-opacity="0.32" />
+      <stop offset="50%" stop-color="#0a2838" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="coatingMag" cx="68%" cy="72%" r="65%">
+      <stop offset="0%" stop-color="#82204e" stop-opacity="0.38" />
+      <stop offset="55%" stop-color="#2a0818" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+
+    <path id="topArc" d="M 164 311 A 402 402 0 0 1 860 311" fill="none" />
+    <path id="bottomArc" d="M 136 729 A 434 434 0 0 0 888 729" fill="none" />
+  </defs>
+
+  <rect width="1024" height="1024" fill="#000000" />
+
+  <circle cx="512" cy="512" r="510" fill="url(#bezel)" />
+
+  <circle cx="512" cy="512" r="462" fill="url(#wordmarkShade)" />
+  <circle cx="512" cy="512" r="462" fill="none" stroke="#1f1f28" stroke-width="1.5" />
+
+  <circle cx="512" cy="512" r="384" fill="#02020a" />
+  <circle cx="512" cy="512" r="376" fill="url(#plateauShade)" />
+  <circle cx="512" cy="512" r="376" fill="none" stroke="#2c2c38" stroke-width="1" />
+  <circle cx="512" cy="512" r="358" fill="#02020a" />
+  <circle cx="512" cy="512" r="350" fill="url(#plateauShade)" />
+  <circle cx="512" cy="512" r="350" fill="none" stroke="#32323e" stroke-width="1" />
+  <circle cx="512" cy="512" r="330" fill="#02020a" />
+  <circle cx="512" cy="512" r="320" fill="url(#mountShade)" />
+  <circle cx="512" cy="512" r="320" fill="none" stroke="#44445a" stroke-width="1.5" />
+
+  <circle cx="512" cy="512" r="298" fill="#030510" />
+  <circle cx="512" cy="512" r="294" fill="url(#glass)" />
+  <circle cx="512" cy="512" r="294" fill="url(#coatingTeal)" />
+  <circle cx="512" cy="512" r="294" fill="url(#coatingMag)" />
+
+  <circle cx="512" cy="512" r="145" fill="#020710" stroke="#0a1c28" stroke-width="2" />
+
+  <ellipse cx="420" cy="388" rx="85" ry="34" fill="#a0dce8" opacity="0.12" transform="rotate(-28 420 388)" />
+  <ellipse cx="440" cy="408" rx="36" ry="13" fill="#e0f3f8" opacity="0.22" transform="rotate(-28 440 408)" />
+
+  <circle cx="512" cy="26" r="12" fill="#e63946" />
+  <circle cx="512" cy="26" r="12" fill="none" stroke="#6e1820" stroke-width="1.5" />
+
+  <text font-family="-apple-system, 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="58"
+    font-weight="600" fill="#9a9aa0" letter-spacing="12">
+    <textPath href="#topArc" startOffset="50%" text-anchor="middle">LOCUS</textPath>
+  </text>
+
+  <text font-family="-apple-system, 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="32"
+    font-weight="500" fill="#9a9aa0" letter-spacing="5">
+    <textPath href="#bottomArc" startOffset="50%" text-anchor="middle">1:1.4 / 25 ASPH · φ 46</textPath>
+  </text>
+</svg>

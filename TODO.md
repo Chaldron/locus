@@ -1,0 +1,23 @@
+# TODO
+
+- Add more watchOS QoL features
+    - What happens when the wrist is down while the app is open? Can/should we show a different screen?
+        - watchOS keeps the view visible on wrist-down by default on always-on displays; react to SwiftUI `isLuminanceReduced` if needed, or set `WKSupportsAlwaysOnDisplay = false` to opt back into the older blurred behavior.
+    - What would a set of home screen widgets look like?
+        - WidgetKit supports Smart Stack widgets and watch complications. The most natural first versions would be glanceable status surfaces like “ready / recording / last track count / last start time”, not dense controls.
+    - Anything else that idiomatic, modern watchOS apps should have?
+        - Smart Stack widgets and complications look like the most on-platform addition for this app; they fit the brief-interaction model better than a richer in-app UI expansion.
+- How difficult is it for the main screen to show a full-screen map with the user's current location underneath the start/stop button and coordinates, at least when the app is awake?
+    - Feasible with MapKit for SwiftUI. `Map`, `Annotation`, and `UserAnnotation` are available across Apple platforms, so the main cost is watch UI/battery tradeoffs.
+- Code review the entire code base for good practices:
+    - Single source of truth for data
+    - Consistent state management
+    - Code re-use where it is truly possible, and not forced DRY
+    - Essential complexity only
+    - As little deviation from Apple-recommended and exemplar app development practices as possible; prefer defaults if you can
+    - `TrackStore.refresh()` currently does synchronous directory reads and GPX parsing on `@MainActor`; revisit only if the watch UI shows real hitching, since many call sites assume it is cheap and making it async would be a nontrivial refactor.
+    - `GPXFile.init(startTime:fileURL:)` writes the file to disk before opening the `FileHandle`; if the handle open throws, a zero-point GPX file is left behind and `TrackStore.refresh()` will surface it. Clean up the partial file in the catch path if this ever shows up in practice.
+    - `GPXFile.append()` does a synchronous `fileHandle.synchronize()` on every sample from the main actor. Fine at the current interval floor (5s) but will hitch if the sampling interval ever drops much lower; revisit then.
+    - `GPXFile.append()` does `fileEnd - footerLength` as an unchecked `UInt64` subtraction. Cannot underflow under normal operation, but a truncated-on-disk file would trap. Not worth defending against unless the file ever gets corrupted externally.
+    - `Tracker.requestPermissionIfNeeded()` stores a `CheckedContinuation` that will not resume if the user kills the app during the permission prompt. Swift's runtime will warn about it; the leak is cosmetic since the process is dying.
+    - `Tracker.locationUpdatesTask` captures `[self]` strongly, creating a transient Tracker→Task→closure→Tracker cycle that is broken by `finish()` setting the task to `nil`. Safe because `Tracker` lives for the app lifetime and `finish()` always runs, but worth knowing if `Tracker` ever needs to be tear-downable.
