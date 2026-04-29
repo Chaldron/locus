@@ -42,16 +42,17 @@ The watch app is intentionally small and stateful:
 ### Watch Data Flow
 
 1. `ContentView` calls `tracker.start()`.
-2. `Tracker` reserves an id and file URL via `TrackStore.allocateTrackFile(startTime:)`.
-3. `GPXFile` creates `<AppGroup container>/Tracks/<device-id>-<timestamp>.gpx`.
+2. `Tracker` reserves an id and file URL via `TrackStore.startingNewTrack(startTime:)`.
+3. `GPXFile` creates `<AppGroup container>/Tracks/<device-id>-<timestamp>-<suffix>.gpx`.
 4. `Tracker` listens to `CLLocationUpdate.liveUpdates()`.
 5. Each accepted sample becomes a `Point` and is appended to the GPX file.
-6. On stop or cancellation, `Tracker.finish()` invalidates the background session, refreshes the local store, and queues a CloudKit upload.
+6. After a fixed number of accepted points, `Tracker` rolls over to a new GPX file without stopping the live location stream and queues the completed segment for upload.
+7. On stop or cancellation, `Tracker.finish()` invalidates the background session, refreshes the local store, and queues a CloudKit upload.
 
 ### Storage and Sync
 
 - Local files are the source of truth.
-- GPX filenames include the watch's short device id and a UTC compact timestamp, like `<DEVICEID>-yyyyMMdd-HHmmss.gpx`.
+- GPX filenames include the watch's short device id, a UTC compact timestamp, and a short unique suffix, like `<DEVICEID>-yyyyMMdd-HHmmss-ABC123.gpx`.
 - Each watch persists its own short device id in the App Group container.
 - The device id is baked into the track id at creation time, so local filenames, CloudKit record names, and export filenames are all inherently scoped to the originating watch.
 - `TrackStore` parses each local GPX file to recover:

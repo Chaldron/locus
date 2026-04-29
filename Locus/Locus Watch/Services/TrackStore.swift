@@ -41,7 +41,10 @@ import Observation
     }
 
     func startingNewTrack(startTime: Date) -> (id: String, fileURL: URL) {
-        let trackID = "\(AppGroup.deviceID)-\(Self.filenameFormatter.string(from: startTime))"
+        let timestampFormatted = Self.filenameFormatter.string(from: startTime)
+        let uniqueSuffix = String(UUID().uuidString.prefix(6)).uppercased()
+        let trackID = "\(AppGroup.deviceID)-\(timestampFormatted)-\(uniqueSuffix)"
+
         logger.info("Generated track ID \(trackID, privacy: .public)")
         return (trackID, tracksDirectory.appendingPathComponent("\(trackID).gpx"))
     }

@@ -9,6 +9,7 @@
         - Smart Stack widgets and complications look like the most on-platform addition for this app; they fit the brief-interaction model better than a richer in-app UI expansion.
 - How difficult is it for the main screen to show a full-screen map with the user's current location underneath the start/stop button and coordinates, at least when the app is awake?
     - Feasible with MapKit for SwiftUI. `Map`, `Annotation`, and `UserAnnotation` are available across Apple platforms, so the main cost is watch UI/battery tradeoffs.
+- Consider a separate continuous session counter on the main screen now that long recordings roll over to a new file every 50 points.
 - Code review the entire code base for good practices:
     - Single source of truth for data
     - Consistent state management

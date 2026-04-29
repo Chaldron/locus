@@ -148,4 +148,3 @@ private struct TrackRow: View {
         .contentShape(Rectangle())
     }
 }
-

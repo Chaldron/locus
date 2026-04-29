@@ -9,6 +9,7 @@ enum RecordingState {
 
 @Observable @MainActor final class Tracker: NSObject, CLLocationManagerDelegate {
     private static let startupFreshnessGrace: TimeInterval = 2
+    private static let maximumPointsPerTrack = 12
 
     var state: RecordingState = .idle
 
@@ -61,16 +62,8 @@ enum RecordingState {
 
         do {
             let startTime = Date.now
-            let (trackID, fileURL) = trackStore.startingNewTrack(startTime: startTime)
+            let trackID = try startNewTrack(startTime: startTime)
             logger.notice("Starting recording for track \(trackID, privacy: .public) on \(Int(Settings.interval), privacy: .public)s interval")
-            
-            gpxFile = try GPXFile(startTime: startTime, fileURL: fileURL)
-
-            activeTrackID = trackID
-            pointCount = 0
-            lastPoint = nil
-            recordingStartedAt = startTime
-            lastPointAcceptedAt = nil
 
             backgroundActivitySession = CLBackgroundActivitySession()
 
@@ -103,6 +96,20 @@ enum RecordingState {
             state = .idle
             throw error
         }
+    }
+
+    private func startNewTrack(startTime: Date) throws -> String {
+        let (newTrackID, newFileURL) = trackStore.startingNewTrack(startTime: startTime)
+        let newGPXFile = try GPXFile(startTime: startTime, fileURL: newFileURL)
+
+        activeTrackID = newTrackID
+        pointCount = 0
+        lastPoint = nil
+        recordingStartedAt = startTime
+        lastPointAcceptedAt = nil
+        gpxFile = newGPXFile
+
+        return newTrackID
     }
 
     private func requestPermissionIfNeeded() async -> CLAuthorizationStatus {
@@ -147,7 +154,7 @@ enum RecordingState {
         lastPointAcceptedAt = receivedAt
 
         guard let gpxFile else {
-            logger.error("Received a location sample without an active GPX file")
+            logger.error("Received a location sample without an active track")
             return
         }
 
@@ -168,9 +175,40 @@ enum RecordingState {
                 "Recorded point \(self.pointCount, privacy: .public) to \(gpxFile.fileURL.lastPathComponent, privacy: .public) with horizontal accuracy \(horizontalAccuracy, privacy: .public)m"
             )
 
+            rollOverTrackIfNeeded()
+
         } catch {
             logger.error(
                 "Failed to append point \(self.pointCount + 1, privacy: .public) to \(gpxFile.fileURL.lastPathComponent, privacy: .public): \(error.localizedDescription, privacy: .public)"
+            )
+        }
+    }
+
+    private func queueUpload(for trackID: String) {
+        logger.info("Queueing upload for completed track \(trackID, privacy: .public)")
+        Task { await trackStore.upload(trackID: trackID) }
+    }
+
+    private func rollOverTrackIfNeeded() {
+        guard pointCount >= Self.maximumPointsPerTrack else { return }
+        guard let finishedTrackId = activeTrackID else {
+            logger.error("Reached point rollover threshold without an active track")
+            return
+        }
+
+        let finishedPointCount = pointCount
+        let rolloverStartTime = Date.now
+
+        do {
+            let newTrackId = try startNewTrack(startTime: rolloverStartTime)
+            logger.notice(
+                "Rolled over recording from \(finishedTrackId, privacy: .public) to \(newTrackId, privacy: .public) after \(finishedPointCount, privacy: .public) points")
+
+            trackStore.refresh()
+            queueUpload(for: finishedTrackId)
+        } catch {
+            logger.error(
+                "Failed to roll over track \(finishedTrackId, privacy: .public) after \(finishedPointCount, privacy: .public) points: \(error.localizedDescription, privacy: .public)"
             )
         }
     }
@@ -181,10 +219,11 @@ enum RecordingState {
         if let finishedTrackID {
             logger.notice("Finishing recording for track \(finishedTrackID, privacy: .public) after \(self.pointCount, privacy: .public) points")
         } else {
-            logger.debug("Finished recording without an active GPX file")
+            logger.debug("Finished recording without an active track")
         }
 
         activeTrackID = nil
+        pointCount = 0
         lastPoint = nil
         gpxFile = nil
         recordingStartedAt = nil
@@ -199,8 +238,7 @@ enum RecordingState {
         trackStore.refresh()
 
         if let finishedTrackID {
-            logger.info("Queueing upload for completed track \(finishedTrackID, privacy: .public)")
-            Task { await trackStore.upload(trackID: finishedTrackID) }
+            queueUpload(for: finishedTrackID)
         }
     }
 
