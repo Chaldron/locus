@@ -1,5 +1,8 @@
 # TODO
 
+- Wire the BLE camera detection proof of concept into recording logic.
+    - Start by only suppressing notifications while a track is already active.
+    - If scan-only detection is flaky on real hardware, try connecting to the known camera and probing `notify` characteristics for a stronger signal.
 - Add more watchOS QoL features
     - What happens when the wrist is down while the app is open? Can/should we show a different screen?
         - watchOS keeps the view visible on wrist-down by default on always-on displays; react to SwiftUI `isLuminanceReduced` if needed, or set `WKSupportsAlwaysOnDisplay = false` to opt back into the older blurred behavior.
