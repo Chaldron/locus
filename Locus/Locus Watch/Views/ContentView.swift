@@ -5,6 +5,7 @@ private let logger = Logger(subsystem: AppGroup.logSubsystem, category: "Content
 
 struct ContentView: View {
     @Environment(Tracker.self) private var tracker
+    @Environment(CameraMonitor.self) private var cameraMonitor
 
     var body: some View {
         VStack(spacing: 12) {
@@ -29,6 +30,9 @@ struct ContentView: View {
             actionButton
         }
         .padding(.horizontal)
+        .task {
+            await cameraMonitor.activate()
+        }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 NavigationLink {

@@ -31,9 +31,10 @@ There are no test targets in the project right now.
 
 The watch app is intentionally small and stateful:
 
-- `Locus/Locus Watch/Locus.swift`: creates `TrackStore` and `Tracker`, injects both into SwiftUI environment, shows a `NavigationStack`.
+- `Locus/Locus Watch/Locus.swift`: creates `TrackStore`, `Tracker`, and `CameraMonitor`, injects them into SwiftUI environment, shows a `NavigationStack`, and handles SwiftUI Bluetooth background tasks.
 - `Locus/Locus Watch/Models.swift`: defines `Point` and `Track`.
 - `Locus/Locus Watch/Services/AppGroup.swift`: centralizes app group id `group.com.adityasm.locus`, the persistent short device id, and the shared fractional ISO 8601 formatter.
+- `Locus/Locus Watch/Services/CameraMonitor.swift`: scan-only BLE proof of concept for camera detection. It uses `CBCentralManager` state restoration plus local notifications, watches for the hard-coded Ricoh GR IIIx and Panasonic Lumix G9 advertised service UUIDs, and records debug state in App Group defaults for the settings screen.
 - `Locus/Locus Watch/Services/Settings.swift`: static App Group-backed interval setting. Options are `5, 10, 30, 60, 120, 300, 600, 900, 1200, 1800, 3600` seconds; default is `30`.
 - `Locus/Locus Watch/Services/Tracker.swift`: requests when-in-use location permission, starts `CLBackgroundActivitySession`, consumes `CLLocationUpdate.liveUpdates()`, drops stale startup fixes, samples by elapsed interval, appends points to the active GPX file, and uploads the finished track when recording stops.
 - `Locus/Locus Watch/Services/GPXFile.swift`: incremental GPX writer that rewrites the closing footer on every append so the file stays valid throughout recording and stores timezone metadata in the GPX header.
@@ -82,6 +83,7 @@ The watch app is intentionally small and stateful:
 - `Locus/Locus Watch/Views/SettingsView.swift`:
   - interval picker
   - current location authorization summary
+  - camera alert debug/status section with manual re-arm and test-notification buttons
 
 ## CLI Export Tool
 
@@ -111,7 +113,8 @@ Keep this repo optimized for a solo developer reading it quickly and maintaining
 ## Capabilities and Project Metadata
 
 - Watch info plist: `Locus/Locus-Watch-Info.plist`
-  - enables background location via `UIBackgroundModes = location`
+  - enables background location and Core Bluetooth via `UIBackgroundModes = location, bluetooth-central`
+  - sets `NSBluetoothAlwaysUsageDescription` for camera detection alerts
 - Watch entitlements: `Locus/Locus Watch/Locus.entitlements`
   - CloudKit container `iCloud.com.adityasm.locus.v2`
   - App Group `group.com.adityasm.locus`
@@ -132,6 +135,7 @@ Important differences so future agents do not assume the original request is a p
 ## Good Files to Start With
 
 - Watch recording behavior: `Locus/Locus Watch/Services/Tracker.swift`
+- Camera detection behavior: `Locus/Locus Watch/Services/CameraMonitor.swift`
 - GPX file format and write strategy: `Locus/Locus Watch/Services/GPXFile.swift`
 - Local file parsing and CloudKit upload: `Locus/Locus Watch/Services/TrackStore.swift`
 - Watch UI: `Locus/Locus Watch/Views`

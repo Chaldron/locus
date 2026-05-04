@@ -7,6 +7,7 @@ private let logger = Logger(subsystem: AppGroup.logSubsystem, category: "Setting
 struct SettingsView: View {
     @Environment(TrackStore.self) private var store
     @Environment(Tracker.self) private var tracker
+    @Environment(CameraMonitor.self) private var cameraMonitor
 
     @AppStorage(Settings.intervalKey, store: AppGroup.defaults) private var interval: Double = Settings.intervalDefault
 
@@ -29,6 +30,63 @@ struct SettingsView: View {
                 Text("Location")
             } footer: {
                 Text("You can change this in Settings > Privacy & Security > Location Services.")
+            }
+
+            Section {
+                LabeledContent("App state", value: cameraMonitor.scenePhaseText)
+                LabeledContent("Bluetooth", value: cameraMonitor.bluetoothStateText)
+                LabeledContent("Notifications", value: cameraMonitor.notificationAuthorizationText)
+                LabeledContent("Armed", value: cameraMonitor.isArmed ? "Yes" : "No")
+                LabeledContent("Scanning", value: cameraMonitor.isScanning ? "Yes" : "No")
+                LabeledContent("Discoveries", value: "\(cameraMonitor.discoveryCount)")
+                LabeledContent("Restores", value: "\(cameraMonitor.restoreCount)")
+                LabeledContent("Alert tasks", value: "\(cameraMonitor.backgroundWakeCount)")
+                LabeledContent("Notifications sent", value: "\(cameraMonitor.notificationCount)")
+
+                if let lastDetectedCameraName = cameraMonitor.lastDetectedCameraName,
+                   let lastDetectedAt = cameraMonitor.lastDetectedAt {
+                    LabeledContent("Last seen", value: "\(lastDetectedCameraName) at \(formattedTimestamp(lastDetectedAt))")
+                }
+
+                if let lastDetectedPeripheralIdentifier = cameraMonitor.lastDetectedPeripheralIdentifier {
+                    LabeledContent("Last peripheral", value: abbreviatedIdentifier(lastDetectedPeripheralIdentifier))
+                }
+
+                if let lastDetectedRSSI = cameraMonitor.lastDetectedRSSI {
+                    LabeledContent("Last RSSI", value: "\(lastDetectedRSSI) dBm")
+                }
+
+                if let lastRestoreAt = cameraMonitor.lastRestoreAt {
+                    LabeledContent("Last restore", value: formattedTimestamp(lastRestoreAt))
+                }
+
+                if let lastBackgroundWakeAt = cameraMonitor.lastBackgroundWakeAt {
+                    LabeledContent("Last wake", value: formattedTimestamp(lastBackgroundWakeAt))
+                }
+
+                if let lastNotificationAt = cameraMonitor.lastNotificationAt {
+                    LabeledContent("Last notification", value: formattedTimestamp(lastNotificationAt))
+                }
+
+                Button("Arm camera alerts") {
+                    Task {
+                        await cameraMonitor.activate()
+                    }
+                }
+
+                Button("Send test notification") {
+                    Task {
+                        await cameraMonitor.sendTestNotification()
+                    }
+                }
+
+                Button("Reset diagnostics", role: .destructive) {
+                    cameraMonitor.resetDiagnostics()
+                }
+            } header: {
+                Text("Camera alerts")
+            } footer: {
+                Text(cameraAlertsFooter)
             }
 
             Section {
@@ -87,5 +145,31 @@ struct SettingsView: View {
         } else {
             return "Deletes all tracks from this watch, including tracks in iCloud."
         }
+    }
+
+    private var cameraAlertsFooter: String {
+        var lines = ["Launch Locus once, then power on a known camera to test background detection."]
+
+        if let lastEventDescription = cameraMonitor.lastEventDescription {
+            lines.append(lastEventDescription)
+        }
+
+        if let lastErrorDescription = cameraMonitor.lastErrorDescription {
+            lines.append(lastErrorDescription)
+        }
+
+        return lines.joined(separator: "\n")
+    }
+
+    private func formattedTimestamp(_ date: Date) -> String {
+        date.formatted(date: .abbreviated, time: .standard)
+    }
+
+    private func abbreviatedIdentifier(_ identifier: String) -> String {
+        guard identifier.count > 8 else {
+            return identifier
+        }
+
+        return String(identifier.prefix(8))
     }
 }
