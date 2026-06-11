@@ -21,6 +21,7 @@ struct TracksView: View {
                         TrackRow(
                             track: track,
                             isActiveTrack: isActiveTrack,
+                            uploadProgress: store.uploadProgress(for: track.id),
                             onDeleteRequest: { pendingDeleteTrack = track },
                             onRetryUploadRequest: { pendingRetryTrack = track }
                         )
@@ -97,6 +98,7 @@ struct TracksView: View {
 private struct TrackRow: View {
     let track: Track
     let isActiveTrack: Bool
+    let uploadProgress: Double?
 
     let onDeleteRequest: () -> Void
     let onRetryUploadRequest: () -> Void
@@ -126,7 +128,12 @@ private struct TrackRow: View {
     @ViewBuilder private var badge: some View {
         switch track.uploadState {
         case .pending: Image(systemName: "icloud.slash").foregroundStyle(.orange)
-        case .uploading: Image(systemName: "icloud.and.arrow.up").foregroundStyle(.blue)
+        case .uploading:
+            ProgressView(value: uploadProgress ?? 0)
+                .progressViewStyle(.circular)
+                .controlSize(.mini)
+                .tint(.blue)
+                .accessibilityLabel("Uploading")
         case .uploaded: Image(systemName: "icloud.fill").foregroundStyle(.secondary)
         }
     }

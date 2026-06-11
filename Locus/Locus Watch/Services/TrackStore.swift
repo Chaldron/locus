@@ -7,6 +7,7 @@ import Observation
     var tracks: [Track] = []
 
     @ObservationIgnored private var uploadingTrackIDs: Set<String> = []
+    private var uploadProgressByTrackID: [String: Double] = [:]
 
     @ObservationIgnored private let tracksDirectory = AppGroup.containerURL.appendingPathComponent("Tracks", isDirectory: true)
 
@@ -89,10 +90,12 @@ import Observation
         }
 
         uploadingTrackIDs.insert(trackID)
+        uploadProgressByTrackID[trackID] = 0
         refresh()
 
         defer {
             uploadingTrackIDs.remove(trackID)
+            uploadProgressByTrackID.removeValue(forKey: trackID)
             refresh()
         }
 
@@ -109,6 +112,11 @@ import Observation
         operationConfiguration.isLongLived = true
         operationConfiguration.qualityOfService = .utility
         operation.configuration = operationConfiguration
+        operation.perRecordProgressBlock = { @Sendable [weak self] _, progress in
+            Task { @MainActor [weak self] in
+                self?.updateUploadProgress(progress, for: trackID)
+            }
+        }
 
         do {
             try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
@@ -135,6 +143,16 @@ import Observation
         } catch {
             logger.error("Upload failed for track \(trackID, privacy: .public): \(error.localizedDescription, privacy: .public)")
         }
+    }
+
+    func uploadProgress(for trackID: String) -> Double? {
+        uploadProgressByTrackID[trackID]
+    }
+
+    private func updateUploadProgress(_ progress: Double, for trackID: String) {
+        guard uploadingTrackIDs.contains(trackID) else { return }
+
+        uploadProgressByTrackID[trackID] = progress
     }
 
     func delete(_ track: Track) async {

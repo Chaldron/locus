@@ -77,7 +77,7 @@ The watch app is intentionally small and stateful:
 - `Locus/Locus Watch/Views/TracksView.swift`:
   - lists local GPX tracks
   - shows point count and start time
-  - shows pending/uploading/uploaded iCloud badge
+  - shows pending/uploaded iCloud badges and circular progress for active uploads
   - swipe left for delete and (for pending tracks) retry upload actions
 - `Locus/Locus Watch/Views/SettingsView.swift`:
   - interval picker
