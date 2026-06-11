@@ -36,7 +36,7 @@ The watch app is intentionally small and stateful:
 - `Locus/Locus Watch/Services/AppGroup.swift`: centralizes app group id `group.com.adityasm.locus`, the persistent short device id, and the shared fractional ISO 8601 formatter.
 - `Locus/Locus Watch/Services/Settings.swift`: static App Group-backed interval setting. Options are `5, 10, 30, 60, 120, 300, 600, 900, 1200, 1800, 3600` seconds; default is `30`.
 - `Locus/Locus Watch/Services/Tracker.swift`: requests when-in-use location permission, starts `CLBackgroundActivitySession`, consumes `CLLocationUpdate.liveUpdates()`, drops stale startup fixes, samples by elapsed interval, appends points to the active GPX file, and uploads the finished track when recording stops.
-- `Locus/Locus Watch/Services/GPXFile.swift`: incremental GPX writer that rewrites the closing footer on every append so the file stays valid throughout recording and stores timezone metadata in the GPX header.
+- `Locus/Locus Watch/Services/GPXFile.swift`: incremental GPX writer that rewrites the closing footer on every append so the file stays valid throughout recording.
 - `Locus/Locus Watch/Services/TrackStore.swift`: local file inventory plus CloudKit sync service, including startup retries for pending uploads and delete-all cleanup for this watch's CloudKit records.
 
 ### Watch Data Flow
