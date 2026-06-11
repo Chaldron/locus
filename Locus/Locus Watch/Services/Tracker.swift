@@ -9,7 +9,7 @@ enum RecordingState {
 
 @Observable @MainActor final class Tracker: NSObject, CLLocationManagerDelegate {
     private static let startupFreshnessGrace: TimeInterval = 2
-    private static let maximumPointsPerTrack = 12
+    private static let trackRolloverInterval: TimeInterval = 6 * 60 * 60
 
     var state: RecordingState = .idle
 
@@ -190,9 +190,9 @@ enum RecordingState {
     }
 
     private func rollOverTrackIfNeeded() {
-        guard pointCount >= Self.maximumPointsPerTrack else { return }
+        guard let recordingStartedAt, Date.now.timeIntervalSince(recordingStartedAt) >= Self.trackRolloverInterval else { return }
         guard let finishedTrackId = activeTrackID else {
-            logger.error("Reached point rollover threshold without an active track")
+            logger.error("Reached track rollover interval without an active track")
             return
         }
 

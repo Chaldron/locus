@@ -46,7 +46,7 @@ The watch app is intentionally small and stateful:
 3. `GPXFile` creates `<AppGroup container>/Tracks/<device-id>-<timestamp>-<suffix>.gpx`.
 4. `Tracker` listens to `CLLocationUpdate.liveUpdates()`.
 5. Each accepted sample becomes a `Point` and is appended to the GPX file.
-6. After a fixed number of accepted points, `Tracker` rolls over to a new GPX file without stopping the live location stream and queues the completed segment for upload.
+6. After six hours, `Tracker` rolls over to a new GPX file on the next accepted point without stopping the live location stream and queues the completed segment for upload.
 7. On stop or cancellation, `Tracker.finish()` invalidates the background session, refreshes the local store, and queues a CloudKit upload.
 
 ### Storage and Sync
