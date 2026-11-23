@@ -45,6 +45,11 @@
 			path = "Locus Watch";
 			sourceTree = "<group>";
 		};
+		70997A5B2FD0809300C22222 /* Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Shared;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				48FFC17D2F8C6F1C0057F5D6 /* Locus Watch */,
+				70997A5B2FD0809300C22222 /* Shared */,
 				48FFC1742F8C6F1C0057F5D6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,6 +96,9 @@
 			dependencies = (
 				48FFC17C2F8C6F1C0057F5D6 /* PBXTargetDependency */,
 			);
+			fileSystemSynchronizedGroups = (
+				70997A5B2FD0809300C22222 /* Shared */,
+			);
 			name = Locus;
 			packageProductDependencies = (
 			);
@@ -112,6 +121,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				48FFC17D2F8C6F1C0057F5D6 /* Locus Watch */,
+				70997A5B2FD0809300C22222 /* Shared */,
 			);
 			name = "Locus Watch";
 			packageProductDependencies = (
@@ -128,7 +138,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2640;
-				LastUpgradeCheck = 2640;
+				LastUpgradeCheck = 2720;
 				TargetAttributes = {
 					48FFC1722F8C6F1C0057F5D6 = {
 						CreatedOnToolsVersion = 26.4;
@@ -189,7 +199,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"${SRCROOT}/..\"\nmkdir -p \"${DERIVED_FILE_DIR}/AppIconSwiftCache\"\nSWIFT_MODULECACHE_PATH=\"${DERIVED_FILE_DIR}/AppIconSwiftCache\" CLANG_MODULE_CACHE_PATH=\"${DERIVED_FILE_DIR}/AppIconSwiftCache\" xcrun --sdk macosx swift \"${PWD}/Scripts/generate_app_icons.swift\" watchOS \"${PWD}/Resources/Logo.svg\" \"${PWD}/Locus/Locus Watch/Assets.xcassets/AppIcon.appiconset\"\n";
+			shellScript = "cd \"${SRCROOT}/..\"\nmkdir -p \"${DERIVED_FILE_DIR}/AppIconSwiftCache\"\nSWIFT_MODULECACHE_PATH=\"${DERIVED_FILE_DIR}/AppIconSwiftCache\" CLANG_MODULE_CACHE_PATH=\"${DERIVED_FILE_DIR}/AppIconSwiftCache\" xcrun --sdk macosx swift \"${PWD}/Scripts/generate_app_icons.swift\" watchOS \"${PWD}/Resources/Logo.svg\" \"${PWD}/Locus/Shared/Assets.xcassets/AppIcon.appiconset\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -246,6 +256,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 2R6L5Z5WW5;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -269,6 +280,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -308,6 +320,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 2R6L5Z5WW5;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -324,6 +337,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
 			name = Release;
@@ -342,6 +356,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Locus-Watch-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Locus;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Locus needs your location to record GPX tracks.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKWatchOnly = YES;
@@ -350,8 +365,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.adityasm.locus.watch;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.adityasm.Locus.watchkitapp;
+				PRODUCT_NAME = "Locus Watch";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -379,6 +394,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "Locus-Watch-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Locus;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Locus needs your location to record GPX tracks.";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKWatchOnly = YES;
@@ -387,8 +403,8 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.adityasm.locus.watch;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.adityasm.Locus.watchkitapp;
+				PRODUCT_NAME = "Locus Watch";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -406,12 +422,15 @@
 		48FFC18B2F8C6F1D0057F5D6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2R6L5Z5WW5;
 				INFOPLIST_KEY_CFBundleDisplayName = Locus;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.adityasm.locus;
+				PRODUCT_BUNDLE_IDENTIFIER = com.adityasm.Locus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -423,12 +442,15 @@
 		48FFC18C2F8C6F1D0057F5D6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 2R6L5Z5WW5;
 				INFOPLIST_KEY_CFBundleDisplayName = Locus;
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
+				IPHONEOS_DEPLOYMENT_TARGET = "$(RECOMMENDED_IPHONEOS_DEPLOYMENT_TARGET)";
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.adityasm.locus;
+				PRODUCT_BUNDLE_IDENTIFIER = com.adityasm.Locus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;

@@ -1,7 +1,7 @@
 import Foundation
 
 enum AppGroup {
-    static let logSubsystem = Bundle.main.bundleIdentifier ?? "com.adityasm.locus.watch"
+    static let logSubsystem = Bundle.main.bundleIdentifier ?? "com.adityasm.Locus.watchkitapp"
 
     static let identifier = "group.com.adityasm.locus"
     static let defaults = UserDefaults(suiteName: identifier)!

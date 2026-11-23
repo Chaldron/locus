@@ -11,14 +11,15 @@ Treat the current source as the source of truth. `AGENTS.md` is the maintained p
 - `TODO.md`: pending tasks yet to be completed
 - `Locus/Locus.xcodeproj`: Xcode project. The target source folders use Xcode filesystem-synchronized groups, so adding or renaming source files under them usually does not require manual project file edits.
 - `Locus/Locus Watch`: watch app source.
+- `Locus/Shared`: asset catalog used by both targets, so the container app and the watch app carry the same icon.
 - `Resources/Logo.svg`: standalone logo artwork.
-- `Scripts/generate_app_icons.swift`: renders `Resources/Logo.svg` into the watchOS asset catalog during builds.
+- `Scripts/generate_app_icons.swift`: renders `Resources/Logo.svg` into the shared asset catalog during builds.
 - `Scripts/locus-exporter-cli.js`: Linux-friendly CLI exporter for downloading all public CloudKit GPX assets into a local folder.
 
 ## Targets
 
-- `Locus`: watch app container target created by the Xcode watchOS template, bundle id `com.adityasm.locus`.
-- `Locus Watch`: standalone watchOS app, bundle id `com.adityasm.locus.watch`, deployment target `watchOS 26.4`.
+- `Locus`: watch app container target created by the Xcode watchOS template, bundle id `com.adityasm.Locus`.
+- `Locus Watch`: standalone watchOS app, bundle id `com.adityasm.Locus.watchkitapp`, deployment target `watchOS 26.4`.
 - Shared Xcode schemes:
   - `Development` is the normal development scheme with `Run = Debug`
   - `Personal`
@@ -116,8 +117,24 @@ Keep this repo optimized for a solo developer reading it quickly and maintaining
   - CloudKit container `iCloud.com.adityasm.locus.v2`
   - App Group `group.com.adityasm.locus`
 - The watch project file sets `NSLocationWhenInUseUsageDescription` to explain GPX tracking for photo geotagging.
-- App icons are generated from `Resources/Logo.svg` by the watch target build phase. The watch app uses a single 1024px asset in `AppIcon.appiconset`.
+- App icons are generated from `Resources/Logo.svg` by the watch target build phase. Both targets use a single 1024px asset in `Locus/Shared/Assets.xcassets/AppIcon.appiconset`.
 - The watch target intentionally keeps `ENABLE_USER_SCRIPT_SANDBOXING = NO` because the icon-generation build phase writes directly into the source asset catalog during the build. The project-level default can stay stock.
+
+## Distribution
+
+The watches get Locus through TestFlight, built by Xcode Cloud.
+
+- App Store Connect record: `Locus - save GPX files`, bundle id `com.adityasm.Locus`. App Store signing matches the bundle id case-sensitively, and the watch app's id must start with the container's id exactly, so keep the capital `L` in both.
+- Xcode Cloud product: `Locus` (the container target). A workflow created for the `Locus Watch` target makes a second app record and every upload is rejected.
+- Workflow `Default`:
+  - starts on pushes to any branch, every Monday at 3:00 AM Central on `main`, and manually
+  - `Archive - watchOS` with scheme `Personal`, prepared for TestFlight (Internal Testing Only)
+  - post-action `TestFlight Internal Testing` to the internal group
+  - `Build - watchOS` with scheme `Development`
+- TestFlight builds expire after 90 days; the weekly schedule keeps a current one available.
+- TestFlight builds use the CloudKit production environment and production push. Builds run from Xcode use development, which the NAS exporter no longer reads.
+- A local App Store export (`xcodebuild -exportArchive`) fails with "Copy failed" when Homebrew's `rsync` is first in `PATH`; run it with `PATH=/usr/bin:/bin:/usr/sbin:/sbin`.
+- App Store Connect shows a placeholder icon for the app. Sharing the asset catalog with the container target and removing the icon's alpha channel did not change that.
 
 ## Historical Notes
 
